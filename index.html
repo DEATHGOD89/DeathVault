@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEATHVAULT | Professional Creative Portfolio</title>
+    <meta name="description" content="DEATHVAULT - High-performance digital solutions, full-stack development, and 3D systems by a professional creative creator.">
+    <meta name="keywords" content="full-stack developer, 3D artist, digital portfolio, web systems, creative solutions">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #ff3e3e;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; cursor: none; }
+
+        /* --- Custom Cursor --- */
+        .cursor-dot { width: 6px; height: 6px; background-color: #fff; position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 9999; will-change: transform; }
+        .cursor-ring { width: 30px; height: 30px; border: 1px solid rgba(255, 255, 255, 0.4); position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 9998; transition: width 0.3s, height 0.3s; will-change: transform; }
+        .particle { position: fixed; pointer-events: none; background: var(--accent); border-radius: 50%; z-index: 9997; opacity: 0.5; filter: blur(1px); will-change: transform, opacity; }
+
+        /* --- Background --- */
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: var(--bg); overflow: hidden; }
+        .bg-mesh::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 62, 62, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 62, 62, 0.03) 1px, transparent 1px); background-size: 50px 50px; perspective: 1000px; transform: rotateX(60deg) translateY(-50%) scale(2); opacity: 0.2; }
+        .bg-orb { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.08; animation: orbFloat 25s infinite alternate ease-in-out; will-change: transform; }
+        .orb-1 { background: var(--accent); top: -10%; left: -10%; }
+        .orb-2 { background: #3e3eff; bottom: -10%; right: -10%; animation-delay: -5s; }
+        @keyframes orbFloat { 0% { transform: translate(0, 0); } 100% { transform: translate(100px, 100px); } }
+
+        /* --- UI Feedback --- */
+        .glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 12px; transition: var(--transition); }
+        .glass:hover { border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); }
+
+        .section-indicator { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 1000; }
+        .dot-nav { width: 8px; height: 8px; border: 1px solid var(--glass-border); border-radius: 50%; transition: var(--transition); }
+        .dot-nav.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); border-color: var(--accent); transform: scale(1.3); }
+
+        .notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0, 255, 0, 0.1); border: 1px solid #00ff00; padding: 15px 30px; border-radius: 8px; color: #00ff00; font-family: var(--font-mono); font-size: 0.8rem; backdrop-filter: blur(10px); z-index: 10000; transition: 0.5s; display: flex; align-items: center; gap: 10px; opacity: 0; }
+        .notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 1200px; height: 60px; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .logo { font-family: var(--font-mono); font-weight: 700; letter-spacing: 2px; font-size: 1.1rem; text-decoration: none; color: var(--text-primary); }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .sound-controls { display: flex; align-items: center; gap: 12px; }
+        .sound-toggle { background: none; border: 1px solid var(--glass-border); color: var(--text-primary); padding: 6px 14px; border-radius: 30px; font-family: var(--font-mono); font-size: 0.65rem; cursor: none; transition: var(--transition); }
+        .volume-slider { width: 60px; height: 3px; -webkit-appearance: none; background: var(--glass-border); border-radius: 5px; outline: none; cursor: none; }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: none; box-shadow: 0 0 5px var(--accent); }
+        .volume-slider::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: none; border: none; box-shadow: 0 0 5px var(--accent); }
+
+        section { min-height: 40vh; padding: 20px 24px; display: flex; flex-direction: column; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; }
+        .hero { justify-content: center; text-align: center; min-height: 100vh; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 700; margin-bottom: 20px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-secondary); max-width: 600px; margin-bottom: 30px; line-height: 1.6; }
+.cta-btn { padding: 12px 30px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: #000; background: #fff; border-radius: 30px; transition: var(--transition); display: inline-block; border: none; cursor: pointer; }
+.cta-btn.secondary { background: transparent; color: #fff; border: 1px solid var(--glass-border); margin-left: 15px; }
+.cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+.cta-btn.submit-btn { width: 100%; margin-top: 10px; }
+
+.contact-container { width: 100%; max-width: 600px; padding: 40px; margin-top: 30px; }
+.contact-form { display: flex; flex-direction: column; gap: 15px; }
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 14px;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    transition: var(--transition);
+    outline: none;
+}
+.contact-form input:focus, .contact-form textarea:focus {
+    border-color: var(--accent);
+    background: rgba(255, 62, 62, 0.05);
+    box-shadow: 0 0 15px rgba(255, 62, 62, 0.1);
+}
+
+::-webkit-scrollbar { width: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; }
+        
+        .creator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px; width: 100%; }
+        .creator-box { height: 300px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+
+        .project-card { height: 320px; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: inherit; position: relative; overflow: hidden; }
+        .project-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .project-id { position: absolute; top: 15px; left: 15px; font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-secondary); opacity: 0.4; }
+        .project-tag { position: absolute; top: 15px; right: 15px; font-family: var(--font-mono); font-size: 0.55rem; color: var(--accent); border: 1px solid var(--accent); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .project-img-wrapper { width: 100%; height: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: var(--transition); }
+        .project-info h3 { font-size: 1.1rem; margin-bottom: 5px; color: #fff; letter-spacing: 1px; }
+        .project-info p { font-size: 0.75rem; color: var(--text-secondary); text-align: center; }
+        
+        .project-specs { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(0,0,0,0.9); border: 1px solid var(--glass-border); padding: 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.5rem; color: var(--text-secondary); width: 80%; opacity: 0; transition: var(--transition); pointer-events: none; z-index: 10; }
+        .project-card:hover .project-specs { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        .project-status { position: absolute; bottom: 15px; left: 15px; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.5rem; color: #00ff00; text-transform: uppercase; }
+        .status-dot { width: 4px; height: 4px; background: #00ff00; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .laser { position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: var(--accent); box-shadow: 0 0 10px var(--accent); opacity: 0; }
+        .project-card:hover .laser { animation: scan 2s linear infinite; opacity: 0.6; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .section-line { width: 0; height: 2px; background: var(--accent); margin: 10px auto; transition: width 1s ease; }
+        .reveal.active .section-line { width: 80px; }
+
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
+        .loader-bar { width: 150px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 15px; }
+        .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--accent); animation: load 2s infinite; }
+        @keyframes load { 0% { left: -100%; } 100% { left: 100%; } }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- Back to Top --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .back-to-top:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-5px); }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+        @media (max-width: 768px) { 
+            .nav-links { display: none; } 
+            section { padding: 40px 20px; } 
+            .hero h1 { font-size: 3.5rem; }
+            .cursor-dot, .cursor-ring { display: none; }
+            body { cursor: auto; }
+            .sound-controls { scale: 0.8; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section-indicator">
+        <div class="dot-nav active"></div><div class="dot-nav"></div><div class="dot-nav"></div><div class="dot-nav"></div><div class="dot-nav"></div>
+    </div>
+
+    <div class="notification" id="notif">SIGNAL TRANSMITTED SECURELY</div>
+
+    <div id="preloader"><div style="font-family: var(--font-mono); color: var(--accent); letter-spacing: 4px;">INITIALIZING</div><div class="loader-bar"></div></div>
+    
+    <div class="cursor-dot" id="dot"></div>
+    <div class="cursor-ring" id="ring"></div>
+    <div class="bg-mesh"><div class="bg-orb orb-1"></div><div class="bg-orb orb-2"></div></div>
+
+    <nav class="glass">
+        <a href="#" class="logo">DEATHVAULT</a>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#projects">Vault</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="sound-controls">
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
+            <button class="sound-toggle" onclick="toggleSound()">SOUND: OFF</button>
+        </div>
+    </nav>
+
+    <section id="home" class="hero reveal">
+        <h1>DEATHVAULT</h1>
+        <p>Professional Creative Solutions & High-Performance Digital Assets. Secure your future in the vault.</p>
+        <div style="margin-top: 20px;">
+            <a href="#projects" class="cta-btn">ACCESS VAULT</a>
+            <a href="#" class="cta-btn secondary" id="resumeBtn">VIEW RESUME</a>
+        </div>
+    </section>
+
+    <section id="about" class="reveal">
+        <h2>THE CREATOR<div class="section-line"></div></h2>
+        <div class="creator-grid">
+            <div class="glass creator-box">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 10L9.01 10"></path>
+                    <path d="M15 10L15.01 10"></path>
+                    <path d="M12 2C7.03 2 3 6.03 3 11C3 13.56 4.08 15.86 5.82 17.5L5.82 20C5.82 21.1 6.72 22 7.82 22L16.18 22C17.28 22 18.18 21.1 18.18 20L18.18 17.5C19.92 15.86 21 13.56 21 11C21 6.03 16.97 2 12 2Z"></path>
+                    <path d="M8 18H16"></path>
+                    <path d="M10 22V18"></path>
+                    <path d="M14 22V18"></path>
+                </svg>
+            </div>
+            <div>
+                <p style="line-height: 1.8; color: var(--text-secondary);">Full-stack developer and digital artist specialized in high-performance web systems and bespoke 3D environments.</p>
+                <div style="display: flex; gap: 30px; margin-top: 30px;">
+                    <div><h4 style="color: var(--accent);">4+</h4><p style="font-size: 0.7rem;">YEARS EXP</p></div>
+                    <div><h4 style="color: var(--accent);">50+</h4><p style="font-size: 0.7rem;">PROJECTS</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="reveal">
+        <h2>SERVICES<div class="section-line"></div></h2>
+        <div class="grid" style="margin-top: 40px;">
+            <div class="card glass" style="padding: 30px;">
+                <div style="color: var(--accent); margin-bottom: 15px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6M12 4.5l-2 15"/></svg></div>
+                <h4>FULL STACK</h4><p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Scalable architecture & performance code.</p>
+            </div>
+            <div class="card glass" style="padding: 30px;">
+                <div style="color: var(--accent); margin-bottom: 15px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+                <h4>VIDEO PRO</h4><p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">High-impact storytelling & visual FX.</p>
+            </div>
+            <div class="card glass" style="padding: 30px;">
+                <div style="color: var(--accent); margin-bottom: 15px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                <h4>3D SYSTEMS</h4><p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Precision modeling & VR environments.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="reveal">
+        <h2 style="margin-bottom: 10px;">THE VAULT<div class="section-line"></div></h2>
+        <div style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-secondary); margin-bottom: 40px;"><span id="asset-count">0</span> ASSETS SECURED // SYSTEM: NOMINAL</div>
+        <div class="grid">
+            <!-- Portfolio -->
+            <a href="https://portfolio-azx.netlify.app/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-001</span><span class="project-tag">Core</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+                <div class="project-info"><h3>PORTFOLIO</h3><p>Showcase Platform</p></div>
+                <div class="project-specs"><div>> ENGINE: HTML/CSS/JS</div><div>> TYPE: INTERACTIVE</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/bhupender-deathgod-b18758279/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-002</span><span class="project-tag">Social</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor" style="color: #0077b5;"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></div>
+                <div class="project-info"><h3>LINKEDIN</h3><p>Professional Hub</p></div>
+                <div class="project-specs"><div>> TYPE: NETWORK</div><div>> STATUS: VERIFIED</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- GitHub -->
+            <a href="https://github.com/DEATHGOD89" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-003</span><span class="project-tag">Code</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></div>
+                <div class="project-info"><h3>GITHUB</h3><p>Repositories</p></div>
+                <div class="project-specs"><div>> TYPE: SOURCE</div><div>> STATUS: SECURE</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- Analyzer -->
+            <a href="https://resumesuit.netlify.app/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-004</span><span class="project-tag">Local</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></svg></div>
+                <div class="project-info"><h3>RESUME ANALYZER</h3><p>Local Processing Engine</p></div>
+                <div class="project-specs"><div>> ENGINE: REACT/LOCAL</div><div>> TYPE: LOGIC</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- Bolt -->
+            <a href="https://boltbrowser01.netlify.app/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-005</span><span class="project-tag">Web</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <div class="project-info"><h3>BOLT</h3><p>Speed Browser</p></div>
+                <div class="project-specs"><div>> ENGINE: V8 OPT</div><div>> TYPE: BROWSER</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- InfoHub -->
+            <a href="https://infohub-powerd-boltnew.netlify.app/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-006</span><span class="project-tag">Data</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg></div>
+                <div class="project-info"><h3>INFOHUB</h3><p>Central Data Node</p></div>
+                <div class="project-specs"><div>> ENGINE: NODE/SQL</div><div>> TYPE: DATABASE</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+            <!-- Money Challenge -->
+            <a href="https://makemonyxchallange.netlify.app/" target="_blank" class="project-card glass">
+                <div class="laser"></div><span class="project-id">#DV-007</span><span class="project-tag">App</span>
+                <div class="project-img-wrapper"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                <div class="project-info"><h3>REWARDS</h3><p>Finance System</p></div>
+                <div class="project-specs"><div>> ENGINE: FINTECH</div><div>> TYPE: APP</div></div>
+                <div class="project-status"><div class="status-dot"></div>Online</div>
+            </a>
+        </div>
+    </section>
+
+    <section id="contact" class="reveal">
+        <h2>CONTACT<div class="section-line"></div></h2>
+        <div class="contact-container glass">
+            <form class="contact-form" action="https://formspree.io/f/mqakvjwr" method="POST">
+                <!-- User requested bhupendersingh123456789011@gmail.com -->
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="email" name="_replyto" placeholder="Your Email Address" required>
+                <textarea name="message" rows="4" placeholder="Your Message" required></textarea>
+                <!-- Formspree will send to the email associated with the ID mqakvjwr. 
+                     Note: The user should ensure mqakvjwr is linked to bhupendersingh123456789011@gmail.com in their Formspree dashboard. -->
+                <button type="submit" class="cta-btn submit-btn">SEND SIGNAL</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div id="terminal" style="max-width: 800px; margin: 0 auto 30px; text-align: left; background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid var(--glass-border); border-radius: 12px; font-family: var(--font-mono); font-size: 0.65rem; color: #00ff00; height: 160px; overflow-y: auto; scrollbar-width: none; position: relative;">
+            <div style="position: sticky; top: 0; right: 0; color: var(--accent); opacity: 0.4; text-align: right;">VAULT_OS v1.1.0 // <span id="vault-time">00:00:00</span></div>
+            <div id="terminal-content"></div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <span style="color: var(--accent);">guest@deathvault:~$</span>
+                <input type="text" id="terminal-input" style="background: none; border: none; color: #00ff00; font-family: inherit; font-size: inherit; outline: none; padding: 0; width: 100%;" autocomplete="off">
+            </div>
+        </div>
+        <p style="opacity: 0.5; font-size: 0.7rem; font-family: var(--font-mono); text-align: center;">&copy; 2026 PIXELVAULT // DEATHVAULT. ALL RIGHTS SECURED.</p>
+    </footer>
+
+    <a href="#home" class="back-to-top" id="btt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg></a>
+    <audio id="bgMusic" loop><source src="./MUSIC.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        const dot = document.getElementById('dot'); const ring = document.getElementById('ring');
+        let mX = 0, mY = 0, rX = 0, rY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mX = e.clientX; mY = e.clientY;
+            dot.style.transform = `translate(${mX}px, ${mY}px)`;
+            if (Math.random() > 0.85) createParticle(mX, mY);
+        });
+
+        function createParticle(x, y) {
+            const p = document.createElement('div'); p.className = 'particle';
+            const size = Math.random() * 2 + 1; p.style.width = p.style.height = `${size}px`;
+            p.style.left = `${x}px`; p.style.top = `${y}px`; document.body.appendChild(p);
+            let op = 0.5, vx = (Math.random()-0.5)*2, vy = (Math.random()-0.5)*2;
+            function anim() { x+=vx; y+=vy; op-=0.02; p.style.transform = `translate(${vx}px, ${vy}px)`; p.style.opacity = op; if(op > 0) requestAnimationFrame(anim); else p.remove(); }
+            anim();
+        }
+
+        function animateCursor() { rX += (mX - rX - 15) * 0.15; rY += (mY - rY - 15) * 0.15; ring.style.transform = `translate(${rX}px, ${rY}px)`; requestAnimationFrame(animateCursor); }
+        animateCursor();
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let isPlaying = false; const music = document.getElementById('bgMusic');
+        function playBlip(f, d) { if(!isPlaying) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
+
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { ring.style.width = ring.style.height = '45px'; playBlip(800, 0.1); });
+            el.addEventListener('mouseleave', () => { ring.style.width = ring.style.height = '30px'; });
+            el.addEventListener('click', () => playBlip(1200, 0.05));
+        });
+
+        function toggleSound() { const btn = document.querySelector('.sound-toggle'); if(!isPlaying) { music.play(); btn.textContent = "SOUND: ON"; isPlaying = true; updateVolume(); } else { music.pause(); btn.textContent = "SOUND: OFF"; isPlaying = false; } }
+        function updateVolume() { music.volume = document.getElementById('volumeSlider').value; }
+
+        const tInput = document.getElementById('terminal-input'); const tContent = document.getElementById('terminal-content');
+        const cmds = { 'help': 'Commands: HELP, ABOUT, VAULT, CLEAR', 'about': 'STATUS: ONLINE', 'vault': 'REDIRECTING...', 'clear': 'CLEARED' };
+        tInput.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') {
+                const val = tInput.value.toLowerCase().trim();
+                const line = document.createElement('div'); line.innerHTML = `<span style="color: var(--accent);">guest@deathvault:~$</span> ${tInput.value}`;
+                tContent.appendChild(line);
+                if(cmds[val]) { if(val==='clear') tContent.innerHTML = ''; else { const res = document.createElement('div'); res.textContent = `> ${cmds[val]}`; tContent.appendChild(res); if(val==='vault') window.location.hash = 'projects'; } }
+                tInput.value = ''; document.getElementById('terminal').scrollTop = 9999;
+            }
+        });
+
+        const obs = new IntersectionObserver((es) => {
+            es.forEach(e => {
+                if(e.isIntersecting) {
+                    e.target.classList.add('active');
+                    if(e.target.id === 'projects') { let c = 0; const target = 7; 
+                        const timer = setInterval(() => { c++; document.getElementById('asset-count').textContent = c; if(c>=target) clearInterval(timer); }, 150);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        function updateClock() { const n = new Date(); document.getElementById('vault-time').textContent = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0')+":"+n.getSeconds().toString().padStart(2,'0'); }
+        setInterval(updateClock, 1000); updateClock();
+
+        window.addEventListener('load', () => { 
+            document.getElementById('preloader').style.opacity = '0'; 
+            setTimeout(() => {
+                document.getElementById('preloader').style.visibility = 'hidden';
+                startTerminalSim();
+            }, 500); 
+        });
+
+        const logs = [
+            "SCANNING VAULT ENTRANCE...",
+            "ENCRYPTING SIGNAL...",
+            "BUFFERING DATA STREAM...",
+            "SECURITY PROTOCOL ACTIVE",
+            "ESTABLISHING SECURE DOWNLINK...",
+            "ACCESSING CORE SYSTEMS...",
+            "NEURAL LINK STABLE",
+            "DATA PACKET RECEIVED"
+        ];
+        function startTerminalSim() {
+            setInterval(() => {
+                const line = document.createElement('div');
+                line.style.opacity = '0.5';
+                line.textContent = `> ${logs[Math.floor(Math.random() * logs.length)]}`;
+                tContent.appendChild(line);
+                if(tContent.childNodes.length > 20) tContent.removeChild(tContent.firstChild);
+                document.getElementById('terminal').scrollTop = 9999;
+            }, 4000);
+        }
+
+        const btt = document.getElementById('btt'); window.addEventListener('scroll', () => { if(window.scrollY > 400) btt.style.opacity = '1'; else btt.style.opacity = '0'; });
+
+        const sections = document.querySelectorAll('section'); const dots = document.querySelectorAll('.dot-nav');
+        const notif = document.getElementById('notif');
+        window.addEventListener('scroll', () => {
+            let current = ''; sections.forEach(s => { if (window.pageYOffset >= s.offsetTop - 150) current = s.getAttribute('id'); });
+            dots.forEach((d, i) => { d.classList.remove('active'); if (i === [...sections].findIndex(s => s.getAttribute('id') === current)) d.classList.add('active'); });
+        });
+
+        document.querySelector('.contact-form').addEventListener('submit', (e) => {
+            const btn = e.target.querySelector('button');
+            btn.textContent = "SIGNAL TRANSMITTED...";
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 4000);
+        });
+
+        const rBtn = document.getElementById('resumeBtn');
+        rBtn.addEventListener('click', (e) => {
+            // Replace '#' with your actual resume PDF link
+            const resumeLink = "#"; 
+            if(resumeLink === "#") {
+                e.preventDefault();
+                rBtn.textContent = "LINK NOT SET";
+                setTimeout(() => rBtn.textContent = "VIEW RESUME", 2000);
+            } else {
+                rBtn.textContent = "DOWNLOADING...";
+                setTimeout(() => rBtn.textContent = "VIEW RESUME", 2000);
+            }
+        });
+    </script>
+</body>
+</html>
