@@ -88,6 +88,7 @@
 
 /* Custom interactive glowing cursor details (Hardware-accelerated via CSS variables!) */
 .custom-cursor-dot {
+  display: none;
   width: 6px;
   height: 6px;
   background-color: #ff1a1a;
@@ -103,6 +104,7 @@
 }
 
 .custom-cursor-glow {
+  display: none;
   width: 40px;
   height: 40px;
   border: 1px solid rgba(255, 26, 26, 0.3);
@@ -116,6 +118,14 @@
   transform: translate3d(calc(var(--cx) * 1px - 20px), calc(var(--cy) * 1px - 20px), 0);
   transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s;
   will-change: transform;
+}
+
+/* Only show custom cursor when mouse is active and on desktop */
+@media (hover: hover) and (pointer: fine) {
+  body.mouse-active .custom-cursor-dot,
+  body.mouse-active .custom-cursor-glow {
+    display: block;
+  }
 }
 
 /* AAA Game Menu Premium Samurai Breathing Cycle (Subtle chest rise, slow backlight pulse) */

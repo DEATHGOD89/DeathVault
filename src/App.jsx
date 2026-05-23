@@ -1098,6 +1098,7 @@ function App() {
   // --- High-Performance Lag-Free Parallax & Cursor CSS Variables Matrix ---
   useEffect(() => {
     const handleMouseMove = (e) => {
+      document.body.classList.add('mouse-active');
       const { clientX, clientY } = e;
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -1111,8 +1112,16 @@ function App() {
       document.documentElement.style.setProperty('--cy', clientY);
     };
 
+    const handleMouseLeave = () => {
+      document.body.classList.remove('mouse-active');
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
   }, []);
 
   // --- Particle Engine (Canvas Sparks & Ash) ---
@@ -1415,7 +1424,7 @@ function App() {
         {/* Layer 1: Background Board (Empty of Samurai) */}
         <div className="absolute inset-0 z-0 w-full h-full overflow-hidden pointer-events-none select-none">
           <img 
-            src="/hero_bg_empty_clean.png" 
+            src="/hero_bg_empty_clean.jpeg" 
             alt="DEATHVAULT Arena Backdrop" 
             className="w-full h-full object-cover filter brightness-[1.18] contrast-[1.06]"
           />
@@ -1440,11 +1449,6 @@ function App() {
                 alt="DEATHVAULT Cyber Samurai"
                 className="w-full h-full object-contain scale-[1.66] filter drop-shadow-[0_15px_45px_rgba(255,26,26,0.38)] brightness-[1.25] contrast-[1.10] relative z-10"
               />
-
-              {/* Sword neon metallic glow reflection overlays */}
-              <div className="absolute left-[49.6%] top-[23%] bottom-[14%] w-[2.5px] bg-[#ffffff] opacity-[0.9] glow-red blur-[1.5px] z-20 overflow-hidden rounded-full">
-                <div className="w-full h-1/3 bg-gradient-to-b from-transparent via-cyber-red to-transparent animate-sword-shine" />
-              </div>
 
               {/* --- UNIQUE & NOTICEABLE SWIRLING GLOWING ENERGY WISPS --- */}
               
@@ -1519,12 +1523,6 @@ function App() {
               </div>
             </div>
           </motion.div>
-
-          {/* Center Downward Descent */}
-          <div className="hidden lg:flex flex-col items-center gap-2 animate-bounce cursor-pointer opacity-30 hover:opacity-100 transition-opacity duration-300" onClick={() => document.getElementById('mastery')?.scrollIntoView({ behavior: 'smooth' })}>
-            <span className="font-gaming text-[8px] tracking-[4px] uppercase">ACTIVATE DESCENT</span>
-            <div className="w-[1.5px] h-6 bg-cyber-red rounded-full" />
-          </div>
 
           {/* Bottom Right */}
           <motion.div 

@@ -6,3 +6,24 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Enforces HTTPS for all connections for 1 year (HSTS)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    
+    # Prevents clickjacking by disabling embedding inside external iframes
+    X-Frame-Options = "DENY"
+    
+    # Prevents MIME-type sniffing vulnerabilities
+    X-Content-Type-Options = "nosniff"
+    
+    # Controls referrer information shared on click-throughs
+    Referrer-Policy = "no-referrer-when-downgrade"
+    
+    # Restricts browser feature API access (Camera, Mic, Geolocation, etc.)
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    
+    # Configures Content Security Policy (enforces scripts/styles only from authorized origins)
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; media-src 'self';"
